@@ -8,14 +8,11 @@ import {
     createPinnedEvent,
     sendAnalytics
 } from '../../analytics';
-import { reloadNow } from '../../app/actions';
+import { appNavigate, reloadNow } from '../../app/actions';
 import { removeLobbyChatParticipant } from '../../chat/actions.any';
 import { openDisplayNamePrompt } from '../../display-name';
-import {
-    NOTIFICATION_TIMEOUT_TYPE,
-    showErrorNotification
-} from '../../notifications';
-import { CONNECTION_ESTABLISHED, CONNECTION_FAILED, connectionDisconnected } from '../connection';
+import { NOTIFICATION_TIMEOUT_TYPE, showErrorNotification, showWarningNotification } from '../../notifications';
+import { CONNECTION_ESTABLISHED, CONNECTION_FAILED, connectionDisconnected, disconnect } from '../connection';
 import { validateJwt } from '../jwt';
 import { JitsiConferenceErrors } from '../lib-jitsi-meet';
 import { MEDIA_TYPE } from '../media';
@@ -132,7 +129,7 @@ function _conferenceFailed({ dispatch, getState }, next, action) {
     case JitsiConferenceErrors.CONFERENCE_DESTROYED: {
         const [ reason ] = error.params;
 
-        dispatch(showErrorNotification({
+        dispatch(showWarningNotification({
             description: reason,
             titleKey: 'dialog.sessTerminated'
         }, NOTIFICATION_TIMEOUT_TYPE.LONG));
@@ -145,6 +142,11 @@ function _conferenceFailed({ dispatch, getState }, next, action) {
             }
         }
 
+        if (navigator.product === 'ReactNative') {
+            dispatch(appNavigate(undefined));
+        } else {
+            dispatch(disconnect(true));
+        }
         break;
     }
     case JitsiConferenceErrors.CONFERENCE_RESTARTED: {

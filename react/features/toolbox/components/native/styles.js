@@ -142,6 +142,15 @@ ColorSchemeRegistry.register('Toolbox', {
         underlayColor: BaseTheme.palette.underlay01
     },
 
+    hangupMenuButtonStyles: {
+        iconStyle: whiteToolbarButtonIcon,
+        style: {
+            ...toolbarButton,
+            backgroundColor: schemeColor('hangupMenu')
+        },
+        underlayColor: BaseTheme.palette.underlay01
+    },
+
     reactionDialog: {
         position: 'absolute',
         width: '100%',

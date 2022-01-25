@@ -49,6 +49,7 @@ export default {
         button: 'rgb(255, 255, 255)',
         buttonToggled: 'rgb(38, 58, 76)',
         buttonToggledBorder: getRGBAFormat('#a4b8d1', 0.6),
-        hangup: 'rgb(227,79,86)'
+        hangup: 'rgb(227,79,86)',
+        hangupMenu: 'rgb(0, 119, 225)'
     }
 };

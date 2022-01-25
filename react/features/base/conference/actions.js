@@ -584,6 +584,16 @@ export function dataChannelOpened() {
 }
 
 /**
+ * Action to end a conference for all participants.
+ *
+ * @returns {Function}
+ */
+export function endConference() {
+    return async (dispatch: Dispatch<any>, getState: Function) =>
+        getCurrentConference(getState).end();
+}
+
+/**
  * Signals that we've been kicked out of the conference.
  *
  * @param {JitsiConference} conference - The {@link JitsiConference} instance

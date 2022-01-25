@@ -53,6 +53,7 @@ VirtualHost "jitmeet.example.com"
     av_moderation_component = "avmoderation.jitmeet.example.com"
     speakerstats_component = "speakerstats.jitmeet.example.com"
     conference_duration_component = "conferenceduration.jitmeet.example.com"
+    end_conference_component = "endconference.jitmeet.example.com"
     -- we need bosh
     modules_enabled = {
         "bosh";
@@ -61,6 +62,7 @@ VirtualHost "jitmeet.example.com"
         "speakerstats";
         "external_services";
         "conference_duration";
+        "end_conference";
         "muc_lobby_rooms";
         "muc_breakout_rooms";
         "av_moderation";
@@ -123,6 +125,9 @@ Component "speakerstats.jitmeet.example.com" "speakerstats_component"
     muc_component = "conference.jitmeet.example.com"
 
 Component "conferenceduration.jitmeet.example.com" "conference_duration_component"
+    muc_component = "conference.jitmeet.example.com"
+
+Component "endconference.jitmeet.example.com" "end_conference_component"
     muc_component = "conference.jitmeet.example.com"
 
 Component "avmoderation.jitmeet.example.com" "av_moderation_component"

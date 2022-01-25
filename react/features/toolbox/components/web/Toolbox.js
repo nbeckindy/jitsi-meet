@@ -22,6 +22,7 @@ import {
     getLocalParticipant,
     hasRaisedHand,
     haveParticipantWithScreenSharingFeature,
+    PARTICIPANT_ROLE,
     raiseHand
 } from '../../../base/participants';
 import { connect } from '../../../base/redux';
@@ -75,6 +76,7 @@ import { VideoBackgroundButton, toggleBackgroundEffect } from '../../../virtual-
 import { VIRTUAL_BACKGROUND_TYPE } from '../../../virtual-background/constants';
 import {
     setFullScreen,
+    setHangupMenuVisible,
     setOverflowMenuVisible,
     setToolbarHovered,
     showToolbox
@@ -82,11 +84,14 @@ import {
 import { THRESHOLDS, NOT_APPLICABLE, NOTIFY_CLICK_MODE } from '../../constants';
 import { isDesktopShareButtonDisabled, isToolboxVisible } from '../../functions';
 import DownloadButton from '../DownloadButton';
+import EndConferenceButton from '../EndConferenceButton';
 import HangupButton from '../HangupButton';
 import HelpButton from '../HelpButton';
+import LeaveConferenceButton from '../LeaveConferenceButton';
 
 import AudioSettingsButton from './AudioSettingsButton';
 import FullscreenButton from './FullscreenButton';
+import HangupMenuButton from './HangupMenuButton';
 import LinkToSalesforceButton from './LinkToSalesforceButton';
 import OverflowMenuButton from './OverflowMenuButton';
 import ProfileButton from './ProfileButton';
@@ -152,6 +157,11 @@ type Props = {
     _disabled: boolean,
 
     /**
+     * Whether the end conference feature is supported.
+     */
+    _endConferenceSupported: boolean,
+
+    /**
      * Whether or not call feedback can be sent.
      */
     _feedbackConfigured: boolean,
@@ -170,6 +180,11 @@ type Props = {
      * Whether the app has Salesforce integration.
      */
     _hasSalesforce: boolean,
+    
+    /**
+     * Whether or not the hangup menu is visible.
+     */
+    _hangupMenuVisible: boolean,
 
     /**
      * Whether or not the app is running in an ios mobile browser.
@@ -180,6 +195,11 @@ type Props = {
      * Whether or not the app is running in mobile browser.
      */
     _isMobile: boolean,
+
+    /**
+     * Whether the local participant is moderator.
+     */
+    _isModerator: boolean,
 
     /**
      * Whether or not the profile is disabled.
@@ -310,6 +330,7 @@ class Toolbox extends Component<Props> {
         // Bind event handlers so they are only bound once per instance.
         this._onMouseOut = this._onMouseOut.bind(this);
         this._onMouseOver = this._onMouseOver.bind(this);
+        this._onSetHangupVisible = this._onSetHangupVisible.bind(this);
         this._onSetOverflowVisible = this._onSetOverflowVisible.bind(this);
         this._onTabIn = this._onTabIn.bind(this);
 
@@ -435,13 +456,19 @@ class Toolbox extends Component<Props> {
      * @inheritdoc
      */
     componentDidUpdate(prevProps) {
-        const { _dialog, dispatch } = this.props;
+        const { _dialog, _visible, dispatch } = this.props;
 
 
         if (prevProps._overflowMenuVisible
             && !prevProps._dialog
             && _dialog) {
             this._onSetOverflowVisible(false);
+            dispatch(setToolbarHovered(false));
+        }
+        if (prevProps._hangupMenuVisible
+            && prevProps._visible
+            && !_visible) {
+            this._onSetHangupVisible(false);
             dispatch(setToolbarHovered(false));
         }
     }
@@ -490,7 +517,7 @@ class Toolbox extends Component<Props> {
     _onEscKey: (KeyboardEvent) => void;
 
     /**
-     * Key handler for overflow menu.
+     * Key handler for overflow/hangup menus.
      *
      * @param {KeyboardEvent} e - Esc key click to close the popup.
      * @returns {void}
@@ -498,8 +525,21 @@ class Toolbox extends Component<Props> {
     _onEscKey(e) {
         if (e.key === 'Escape') {
             e.stopPropagation();
+            this._closeHangupMenuIfOpen();
             this._closeOverflowMenuIfOpen();
         }
+    }
+
+    /**
+     * Closes the hangup menu if opened.
+     *
+     * @private
+     * @returns {void}
+     */
+    _closeHangupMenuIfOpen() {
+        const { dispatch, _hangupMenuVisible } = this.props;
+
+        _hangupMenuVisible && dispatch(setHangupMenuVisible(false));
     }
 
     /**
@@ -948,6 +988,20 @@ class Toolbox extends Component<Props> {
         this.props.dispatch(setToolbarHovered(true));
     }
 
+    _onSetHangupVisible: (boolean) => void;
+
+    /**
+     * Sets the visibility of the hangup menu.
+     *
+     * @param {boolean} visible - Whether or not the hangup menu should be
+     * displayed.
+     * @private
+     * @returns {void}
+     */
+    _onSetHangupVisible(visible) {
+        this.props.dispatch(setHangupMenuVisible(visible));
+        this.props.dispatch(setToolbarHovered(visible));
+    }
 
     _onSetOverflowVisible: (boolean) => void;
 
@@ -1277,7 +1331,10 @@ class Toolbox extends Component<Props> {
      */
     _renderToolboxContent() {
         const {
+            _endConferenceSupported,
+            _hangupMenuVisible,
             _isMobile,
+            _isModerator,
             _overflowDrawer,
             _overflowMenuVisible,
             _reactionsEnabled,
@@ -1353,12 +1410,33 @@ class Toolbox extends Component<Props> {
                             </OverflowMenuButton>
                         )}
 
-                        <HangupButton
-                            buttonKey = 'hangup'
-                            customClass = 'hangup-button'
-                            key = 'hangup-button'
-                            notifyMode = { this._getButtonNotifyMode('hangup') }
-                            visible = { isToolbarButtonEnabled('hangup', _toolbarButtons) } />
+                        { isToolbarButtonEnabled('hangup', _toolbarButtons) && (
+                            _endConferenceSupported
+                                ? <HangupMenuButton
+                                    ariaControls = 'hangup-menu'
+                                    isOpen = { _hangupMenuVisible }
+                                    key = 'hangup-menu'
+                                    onVisibilityChange = { this._onSetHangupVisible }>
+                                    <ul
+                                        aria-label = { t(toolbarAccLabel) }
+                                        id = 'hangup-menu'
+                                        onKeyDown = { this._onEscKey }
+                                        role = 'menu'>
+                                        <LeaveConferenceButton
+                                            key = 'leave-conference'
+                                            showLabel = { true } />
+                                        { _isModerator && <EndConferenceButton
+                                            key = 'end-conference'
+                                            showLabel = { true } /> }
+                                    </ul>
+                                </HangupMenuButton>
+                                : <HangupButton
+                                    buttonKey = 'hangup'
+                                    customClass = 'hangup-button'
+                                    key = 'hangup-button'
+                                    notifyMode = { this._getButtonNotifyMode('hangup') }
+                                    visible = { isToolbarButtonEnabled('hangup', _toolbarButtons) } />
+                        )}
                     </div>
                 </div>
             </div>
@@ -1378,6 +1456,7 @@ class Toolbox extends Component<Props> {
 function _mapStateToProps(state, ownProps) {
     const { conference } = state['features/base/conference'];
     let desktopSharingEnabled = JitsiMeetJS.isDesktopSharingEnabled();
+    const endConferenceSupported = conference?.isEndConferenceSupported();
     const {
         buttonsWithNotifyClick,
         callStatsID,
@@ -1388,6 +1467,7 @@ function _mapStateToProps(state, ownProps) {
     } = state['features/base/config'];
     const {
         fullScreen,
+        hangupMenuVisible,
         overflowMenuVisible,
         overflowDrawer
     } = state['features/toolbox'];
@@ -1419,14 +1499,17 @@ function _mapStateToProps(state, ownProps) {
         _desktopSharingDisabledTooltipKey: desktopSharingDisabledTooltipKey,
         _dialog: Boolean(state['features/base/dialog'].component),
         _disabled: Boolean(iAmRecorder || iAmSipGateway),
+        _endConferenceSupported: Boolean(endConferenceSupported),
         _feedbackConfigured: Boolean(callStatsID),
         _fullScreen: fullScreen,
+        _isModerator: localParticipant.role === PARTICIPANT_ROLE.MODERATOR,
         _gifsEnabled: isGifEnabled(state),
         _isProfileDisabled: Boolean(disableProfile),
         _isIosMobile: isIosMobileBrowser(),
         _isMobile: isMobileBrowser(),
         _isVpaasMeeting: isVpaasMeeting(state),
         _hasSalesforce: isSalesforceEnabled(state),
+        _hangupMenuVisible: hangupMenuVisible,
         _localParticipantID: localParticipant?.id,
         _localVideo: localVideo,
         _overflowMenuVisible: overflowMenuVisible,
