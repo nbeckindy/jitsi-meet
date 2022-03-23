@@ -2,7 +2,6 @@
 
 import { endConference } from '../../base/conference';
 import { translate } from '../../base/i18n';
-import { IconHangup } from '../../base/icons';
 import { connect } from '../../base/redux';
 import { AbstractButton, type AbstractButtonProps } from '../../base/toolbox/components';
 
@@ -22,7 +21,6 @@ type Props = AbstractButtonProps & {
  */
 class EndConferenceButton extends AbstractButton<Props, *> {
     accessibilityLabel = 'toolbar.accessibilityLabel.endConference';
-    icon = IconHangup;
     label = 'toolbar.endConference';
     tooltip = 'toolbar.endConference';
 
@@ -59,6 +57,16 @@ function _mapStateToProps(state, ownProps) {
     const { visible = true } = ownProps;
 
     return {
+        hideIcon: true,
+        showLabel: true,
+        styles: {
+            style: {
+                borderRadius: '5px',
+                display: 'flex',
+                justifyContent: 'center',
+                margin: '8px 0 0 0'
+            }
+        },
         visible
     };
 }

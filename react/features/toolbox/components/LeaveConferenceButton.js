@@ -4,8 +4,8 @@ import { createToolbarEvent, sendAnalytics } from '../../analytics';
 import { appNavigate } from '../../app/actions';
 import { disconnect } from '../../base/connection';
 import { translate } from '../../base/i18n';
-import { IconHangup } from '../../base/icons';
 import { connect } from '../../base/redux';
+import { ColorPalette } from '../../base/styles';
 import { AbstractButton, type AbstractButtonProps } from '../../base/toolbox/components';
 
 /**
@@ -24,7 +24,6 @@ type Props = AbstractButtonProps & {
  */
 class LeaveConferenceButton extends AbstractButton<Props, *> {
     accessibilityLabel = 'toolbar.accessibilityLabel.leaveConference';
-    icon = IconHangup;
     label = 'toolbar.leaveConference';
     tooltip = 'toolbar.leaveConference';
 
@@ -66,6 +65,16 @@ function _mapStateToProps(state, ownProps) {
     const { visible = true } = ownProps;
 
     return {
+        hideIcon: true,
+        showLabel: true,
+        styles: {
+            style: {
+                backgroundColor: ColorPalette.red,
+                borderRadius: '5px',
+                display: 'flex',
+                justifyContent: 'center'
+            }
+        },
         visible
     };
 }

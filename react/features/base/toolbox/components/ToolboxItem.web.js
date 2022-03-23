@@ -68,9 +68,11 @@ export default class ToolboxItem extends AbstractToolboxItem<Props> {
             disabled,
             elementAfter,
             icon,
+            hideIcon,
             onClick,
             onKeyDown,
             showLabel,
+            styles,
             tooltipPosition,
             toggled
         } = this.props;
@@ -84,7 +86,8 @@ export default class ToolboxItem extends AbstractToolboxItem<Props> {
             onKeyDown: disabled ? undefined : onKeyDown,
             onKeyPress: this._onKeyPress,
             tabIndex: 0,
-            role: showLabel ? 'menuitem' : 'button'
+            role: showLabel ? 'menuitem' : 'button',
+            style: styles && styles.style
         };
 
         const elementType = showLabel ? 'li' : 'div';
@@ -102,8 +105,8 @@ export default class ToolboxItem extends AbstractToolboxItem<Props> {
         }
         let children = (
             <Fragment>
-                { this._renderIcon() }
-                { showLabel && <span>
+                { !hideIcon && this._renderIcon() }
+                { showLabel && <span style = { styles && styles.labelStyle }>
                     { this.label }
                 </span> }
                 { elementAfter }
@@ -130,12 +133,17 @@ export default class ToolboxItem extends AbstractToolboxItem<Props> {
      * @returns {ReactElement}
      */
     _renderIcon() {
-        const { customClass, disabled, icon, showLabel, toggled } = this.props;
+        const { customClass, disabled, icon, showLabel, styles, toggled } = this.props;
         const iconComponent = <Icon src = { icon } />;
         const elementType = showLabel ? 'span' : 'div';
         const className = `${showLabel ? 'overflow-menu-item-icon' : 'toolbox-icon'} ${
             toggled ? 'toggled' : ''} ${disabled ? 'disabled' : ''} ${customClass ?? ''}`;
+        const style = styles && styles.iconStyle;
+        const iconProps = {
+            className,
+            style
+        };
 
-        return React.createElement(elementType, { className }, iconComponent);
+        return React.createElement(elementType, iconProps, iconComponent);
     }
 }

@@ -1,7 +1,7 @@
 // @flow
 
 import { translate } from '../../../base/i18n';
-import { IconHangup } from '../../../base/icons';
+import { IconClose, IconHangup } from '../../../base/icons';
 import { AbstractHangupButton, type AbstractButtonProps } from '../../../base/toolbox/components';
 
 
@@ -27,6 +27,7 @@ type Props = AbstractButtonProps & {
 class HangupToggleButton extends AbstractHangupButton<Props, *> {
     accessibilityLabel = 'toolbar.accessibilityLabel.hangup';
     icon = IconHangup;
+    toggledIcon = IconClose;
     label = 'toolbar.hangup';
     toggledLabel = 'toolbar.hangup';
 

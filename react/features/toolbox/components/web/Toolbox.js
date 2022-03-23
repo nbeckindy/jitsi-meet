@@ -308,6 +308,11 @@ const styles = () => {
             right: 'auto',
             maxHeight: 'inherit',
             margin: 0
+        },
+        hangupMenu: {
+            fontSize: 14,
+            listStyleType: 'none',
+            padding: '8px'
         }
     };
 };
@@ -1419,6 +1424,7 @@ class Toolbox extends Component<Props> {
                                     onVisibilityChange = { this._onSetHangupVisible }>
                                     <ul
                                         aria-label = { t(toolbarAccLabel) }
+                                        className = { classes.hangupMenu }
                                         id = 'hangup-menu'
                                         onKeyDown = { this._onEscKey }
                                         role = 'menu'>
@@ -1456,7 +1462,7 @@ class Toolbox extends Component<Props> {
 function _mapStateToProps(state, ownProps) {
     const { conference } = state['features/base/conference'];
     let desktopSharingEnabled = JitsiMeetJS.isDesktopSharingEnabled();
-    const endConferenceSupported = conference?.isEndConferenceSupported();
+    const endConferenceSupported = true; //conference?.isEndConferenceSupported();
     const {
         buttonsWithNotifyClick,
         callStatsID,
