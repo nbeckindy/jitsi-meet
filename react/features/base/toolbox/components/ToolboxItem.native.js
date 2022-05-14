@@ -39,13 +39,18 @@ export default class ToolboxItem extends AbstractToolboxItem<Props> {
         const {
             disabled,
             elementAfter,
+            hideIcon,
             onClick,
             showLabel,
             styles,
             toggled
         } = this.props;
 
-        let children = this._renderIcon();
+        let children;
+
+        if (!hideIcon) {
+            children = this._renderIcon();
+        }
 
         // XXX When using a wrapper View, apply the style to it instead of
         // applying it to the TouchableHighlight.

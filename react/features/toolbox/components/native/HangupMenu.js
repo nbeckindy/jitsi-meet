@@ -7,8 +7,9 @@ import { BottomSheet, hideDialog, isDialogOpen } from '../../../base/dialog';
 import { getLocalParticipant, PARTICIPANT_ROLE } from '../../../base/participants';
 import { connect } from '../../../base/redux';
 import { StyleType } from '../../../base/styles';
-import EndConferenceButton from '../EndConferenceButton';
-import LeaveConferenceButton from '../LeaveConferenceButton';
+
+import EndConferenceButton from './EndConferenceButton';
+import LeaveConferenceButton from './LeaveConferenceButton';
 
 
 /**
@@ -81,8 +82,8 @@ class HangupMenu extends PureComponent<Props, *> {
         return (
             <BottomSheet
                 onCancel = { this._onCancel }>
-                <LeaveConferenceButton { ...buttonProps } />
                 { _isModerator && <EndConferenceButton { ...buttonProps } /> }
+                <LeaveConferenceButton { ...buttonProps } />
             </BottomSheet>
         );
     }

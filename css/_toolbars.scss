@@ -148,6 +148,17 @@
     }
 }
 
+.end-conference-button {
+    background-color: $hangupColor;
+    border-radius: 6px;
+}
+
+.leave-conference-button {
+    background-color: #E0E0E0;
+    border-radius: 6px;
+    margin: 8px 0 0 0;
+}
+
 .profile-button-avatar {
     align-items: center;
 }

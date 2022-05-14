@@ -84,14 +84,14 @@ import {
 import { THRESHOLDS, NOT_APPLICABLE, NOTIFY_CLICK_MODE } from '../../constants';
 import { isDesktopShareButtonDisabled, isToolboxVisible } from '../../functions';
 import DownloadButton from '../DownloadButton';
-import EndConferenceButton from '../EndConferenceButton';
 import HangupButton from '../HangupButton';
 import HelpButton from '../HelpButton';
-import LeaveConferenceButton from '../LeaveConferenceButton';
 
 import AudioSettingsButton from './AudioSettingsButton';
+import EndConferenceButton from './EndConferenceButton';
 import FullscreenButton from './FullscreenButton';
 import HangupMenuButton from './HangupMenuButton';
+import LeaveConferenceButton from './LeaveConferenceButton';
 import LinkToSalesforceButton from './LinkToSalesforceButton';
 import OverflowMenuButton from './OverflowMenuButton';
 import ProfileButton from './ProfileButton';
@@ -1428,12 +1428,10 @@ class Toolbox extends Component<Props> {
                                         id = 'hangup-menu'
                                         onKeyDown = { this._onEscKey }
                                         role = 'menu'>
-                                        <LeaveConferenceButton
-                                            key = 'leave-conference'
-                                            showLabel = { true } />
                                         { _isModerator && <EndConferenceButton
-                                            key = 'end-conference'
-                                            showLabel = { true } /> }
+                                            key = 'end-conference' /> }
+                                        <LeaveConferenceButton
+                                            key = 'leave-conference' />
                                     </ul>
                                 </HangupMenuButton>
                                 : <HangupButton

@@ -1,9 +1,9 @@
 // @flow
 
-import { endConference } from '../../base/conference';
-import { translate } from '../../base/i18n';
-import { connect } from '../../base/redux';
-import { AbstractButton, type AbstractButtonProps } from '../../base/toolbox/components';
+import { endConference } from '../../../base/conference';
+import { translate } from '../../../base/i18n';
+import { connect } from '../../../base/redux';
+import { AbstractButton, type AbstractButtonProps } from '../../../base/toolbox/components';
 
 /**
  * The type of the React {@code Component} props of {@link EndConferenceButton}.
@@ -61,12 +61,11 @@ function _mapStateToProps(state, ownProps) {
         showLabel: true,
         styles: {
             style: {
-                borderRadius: '5px',
                 display: 'flex',
-                justifyContent: 'center',
-                margin: '8px 0 0 0'
+                justifyContent: 'center'
             }
         },
+        customClass: 'end-conference-button',
         visible
     };
 }

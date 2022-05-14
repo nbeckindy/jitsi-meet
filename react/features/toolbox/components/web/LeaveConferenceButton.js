@@ -1,12 +1,11 @@
 // @flow
 
-import { createToolbarEvent, sendAnalytics } from '../../analytics';
-import { appNavigate } from '../../app/actions';
-import { disconnect } from '../../base/connection';
-import { translate } from '../../base/i18n';
-import { connect } from '../../base/redux';
-import { ColorPalette } from '../../base/styles';
-import { AbstractButton, type AbstractButtonProps } from '../../base/toolbox/components';
+import { createToolbarEvent, sendAnalytics } from '../../../analytics';
+import { appNavigate } from '../../../app/actions';
+import { disconnect } from '../../../base/connection';
+import { translate } from '../../../base/i18n';
+import { connect } from '../../../base/redux';
+import { AbstractButton, type AbstractButtonProps } from '../../../base/toolbox/components';
 
 /**
  * The type of the React {@code Component} props of {@link LeaveConferenceButton}.
@@ -69,12 +68,12 @@ function _mapStateToProps(state, ownProps) {
         showLabel: true,
         styles: {
             style: {
-                backgroundColor: ColorPalette.red,
-                borderRadius: '5px',
+                color: 'black',
                 display: 'flex',
                 justifyContent: 'center'
             }
         },
+        customClass: 'leave-conference-button',
         visible
     };
 }
