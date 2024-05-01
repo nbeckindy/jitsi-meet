@@ -130,6 +130,7 @@ export interface IJitsiConference {
     setAssumedBandwidthBps: (value: number) => void;
     setDesktopSharingFrameRate: Function;
     setDisplayName: Function;
+    setIsSilent: Function;
     setLocalParticipantProperty: Function;
     setMediaEncryptionKey: Function;
     setReceiverConstraints: Function;
